@@ -1,0 +1,25 @@
+.strip-container {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid black;
+  height: 80px;
+  width: 600px;
+}
+
+.strip-callsign {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  width: 80px;
+  border-right: 1px solid black;
+}
+
+.strip-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
