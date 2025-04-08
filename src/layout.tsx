@@ -59,6 +59,7 @@ export default function App() {
     <div className="layout-page">
       <div className="layout-container">
         <DndContext
+          autoScroll={false}
           sensors={sensors}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
