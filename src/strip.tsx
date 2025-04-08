@@ -1,14 +1,14 @@
 import "./index.css";
 import "./strip.css";
 import { StripData } from "./types";
-import { useDraggable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
 
 type StripProps = {
   stripData: StripData;
 };
 
 export default function Strip({ stripData }: StripProps) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: stripData.id,
   });
 

@@ -1,8 +1,7 @@
-export type CurrentBay = "RDY" | "PUSH" | "TAXI";
+export type CurrentBay = "RDY" | "STUP" | "PUSH" | "ACT" | "ARR" | "GMCAG";
 
 export type StripData = {
   id: string;
-  bay: CurrentBay;
   data: string;
 };
 

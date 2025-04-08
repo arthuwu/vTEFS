@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 code {
@@ -21,4 +22,49 @@ code {
   height: 100%;
   width: 100%;
   display: flex;
+}
+
+.bottom-bar {
+  width: 100vw;
+  bottom: 0;
+  position: absolute;
+  padding: 5px;
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+.gmc-amc-container {
+  grid-template-columns: 620px 620px 310px;
+  grid-template-rows: 240px 240px 400px;
+  display: grid;
+}
+
+.tl1 {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.tl2 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.tl3 {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.tl4 {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+}
+
+.tl5 {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.tl6 {
+  grid-column: 3;
+  grid-row: 2 / span 2;
 }

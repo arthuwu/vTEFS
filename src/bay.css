@@ -1,6 +1,6 @@
 .bay-container {
-  height: 490px;
-  width: 620px;
+  height: 100%;
+  width: 100%;
   border: 1px solid black;
 }
 
