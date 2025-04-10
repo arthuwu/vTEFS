@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Bay from "./bay";
 import Strip from "./strip";
+import StripCreateWindow from "./stripcreate";
 import "./index.css";
 import { Bay as BayData, StripData } from "./types";
 import {
@@ -19,25 +20,6 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 
-const INITIAL_STRIPS: StripData[] = [
-  {
-    id: "CPA123",
-    data: "hello world",
-  },
-  {
-    id: "CPA1234",
-    data: "hello world",
-  },
-  {
-    id: "CPA1235",
-    data: "hello world",
-  },
-  {
-    id: "CPA2234",
-    data: "hello world",
-  },
-];
-
 export default function App() {
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
@@ -47,12 +29,15 @@ export default function App() {
 
   const [activeStripId, setActiveStripId] = useState<string | null>();
   const [bayContent, setBayContent] = useState({
-    RDY: INITIAL_STRIPS,
+    RDY: [],
     STUP: [],
     PUSH: [],
     ACT: [],
     ARR: [],
     GMCAG: [],
+  });
+  const [windowToggle, setWindowToggle] = useState({
+    createStrip: false,
   });
 
   return (
@@ -66,9 +51,6 @@ export default function App() {
           onDragOver={handleDragOver}
           collisionDetection={closestCorners}
         >
-          {/*{BAYS.map((bay) => {
-            return <Bay key={bay.id} bay={bay} strips={bayContent[bay.id]} />;
-          })}*/}
           <div className="layout-container gmc-amc-container">
             <div className="tl1">
               <Bay
@@ -126,17 +108,26 @@ export default function App() {
           ) : null}
         </DragOverlay>
         <div className="bottom-bar">
-          <button onClick={createNewStrip}>Create new</button>
+          <button onClick={() => setWindowToggle({ createStrip: true })}>
+            Create new
+          </button>
+
+          {windowToggle["createStrip"] && (
+            <StripCreateWindow
+              onCreate={createNewStrip}
+              onClose={() => setWindowToggle({ createStrip: false })}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 
-  function createNewStrip() {
+  function createNewStrip(newStrip: StripData) {
     setBayContent((prev: any) => {
       return {
         ...prev,
-        RDY: [...bayContent["RDY"], { id: "NEW", data: "hello world" }],
+        RDY: [...bayContent["RDY"], newStrip],
       };
     });
   }
@@ -244,7 +235,7 @@ export default function App() {
         [overBay]: arrayMove(bayContent[overBay], activeBayIndex, overBayIndex),
       }));
     }
-
+    resizeStrip(overBay, stripId);
     setActiveStripId(null);
   }
 
@@ -253,5 +244,30 @@ export default function App() {
     const stripId = active.id as string;
 
     setActiveStripId(stripId);
+  }
+
+  function resizeStrip(newBay, stripId) {
+    console.log("newBay:" + newBay + " | stripId:" + stripId);
+    if (newBay === "ARR" || newBay === "GMCAG") {
+      setBayContent((prev: any) => ({
+        ...prev,
+        [newBay]: prev[newBay].map((strip: any) =>
+          Object.values(strip).includes(stripId)
+            ? { ...strip, size: "half" }
+            : strip
+        ),
+      }));
+      console.log(bayContent);
+    } else {
+      setBayContent((prev: any) => ({
+        ...prev,
+        [newBay]: prev[newBay].map((strip: any) =>
+          Object.values(strip).includes(stripId)
+            ? { ...strip, size: "full" }
+            : strip
+        ),
+      }));
+      console.log(bayContent);
+    }
   }
 }

@@ -63,6 +63,8 @@ code {
 .tl5 {
   grid-column: 3;
   grid-row: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .tl6 {

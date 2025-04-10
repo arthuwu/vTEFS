@@ -4,6 +4,15 @@
   border: 1px solid black;
   height: 80px;
   width: 600px;
+  position: relative;
+}
+
+.strip-container-partial {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid black;
+  height: 80px;
+  width: 300px;
 }
 
 .strip-callsign {
@@ -22,4 +31,18 @@
   justify-content: center;
   text-align: center;
   height: 100%;
+}
+
+.indented {
+  transform: translateX(-10px);
+}
+
+.strip-toggle-indent {
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 25px;
+  background: transparent;
+  border: none;
 }
