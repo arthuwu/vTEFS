@@ -2,7 +2,9 @@ import { useState } from "react";
 import Bay from "./bay";
 import Strip from "./strip";
 import StripCreateWindow from "./stripcreate";
+import { UpdateStrip } from "./updatestrip";
 import "./index.css";
+import "./layout.css";
 import { Bay as BayData, StripData } from "./types";
 import {
   DndContext,
@@ -19,6 +21,7 @@ import {
   UniqueIdentifier,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import { createPortal } from "react-dom";
 
 export default function App() {
   const mouseSensor = useSensor(MouseSensor);
@@ -27,7 +30,8 @@ export default function App() {
 
   const sensors = useSensors(mouseSensor, touchSensor, keyboardSensor);
 
-  const [activeStripId, setActiveStripId] = useState<string | null>();
+  const [activeStripId, setActiveStripId] = useState<string | null>(); //active for drag overlay
+  const [selectionInProg, setSelectionInProg] = useState<string | null>();
   const [bayContent, setBayContent] = useState({
     RDY: [],
     STUP: [],
@@ -40,8 +44,51 @@ export default function App() {
     createStrip: false,
   });
 
+  const testData: StripData = {
+    id: "1231ghasd",
+    type: "DEP",
+    fpdata: {
+      eobt: null,
+      fr: null,
+      cs: "THIS",
+      atyp: null,
+      wtc: null,
+      ssr: null,
+      drwy: null,
+      arwy: null,
+      rfl: null,
+      sid: null,
+      adep: null,
+      ades: null,
+      bay: null,
+      atis: null,
+      qnh: null,
+      ttr: null,
+      er: null,
+      cfl: null,
+      tsat: null,
+      ctot: null,
+      ps_c: null,
+      twy: null,
+      tsatrmk: null,
+      ctotrmk: null,
+      cdmrmk: null,
+      a_rmk: null,
+      act: null,
+    },
+    flagdata: {
+      cft: false,
+      ctl: false,
+      fpc_flag: false,
+      c_flag: false,
+    },
+    size: "full",
+    indent: false,
+  };
+
   return (
     <div className="layout-page">
+      {selectionInProg && <div className="selection-blocker"></div>}
       <div className="layout-container">
         <DndContext
           autoScroll={false}
@@ -57,6 +104,7 @@ export default function App() {
                 key={"RDY"}
                 bay={{ id: "RDY", title: "CDC Ready to Start" }}
                 strips={bayContent["RDY"]}
+                handleStripClick={selectStrip}
               />
             </div>
             <div className="tl2">
@@ -64,6 +112,7 @@ export default function App() {
                 key={"STUP"}
                 bay={{ id: "STUP", title: "Startup" }}
                 strips={bayContent["STUP"]}
+                handleStripClick={selectStrip}
               />
             </div>
             <div className="tl3">
@@ -71,6 +120,7 @@ export default function App() {
                 key={"PUSH"}
                 bay={{ id: "PUSH", title: "Pushback" }}
                 strips={bayContent["PUSH"]}
+                handleStripClick={selectStrip}
               />
             </div>
             <div className="tl4">
@@ -78,6 +128,7 @@ export default function App() {
                 key={"ACT"}
                 bay={{ id: "ACT", title: "Active" }}
                 strips={bayContent["ACT"]}
+                handleStripClick={selectStrip}
               />
             </div>
             <div className="tl5">
@@ -85,6 +136,7 @@ export default function App() {
                 key={"ARR"}
                 bay={{ id: "ARR", title: "AMC Arrivals" }}
                 strips={bayContent["ARR"]}
+                handleStripClick={selectStrip}
               />
             </div>
             <div className="tl6">
@@ -92,33 +144,51 @@ export default function App() {
                 key={"GMCAG"}
                 bay={{ id: "GMCAG", title: "GMC Active" }}
                 strips={bayContent["GMCAG"]}
+                handleStripClick={selectStrip}
               />
             </div>
           </div>
-        </DndContext>
-        <DragOverlay>
-          {activeStripId ? (
-            <Strip
-              stripData={
-                Object.values(bayContent)
-                  .flat()
-                  .find((obj) => Object.values(obj).includes(activeStripId))!
-              }
-            />
-          ) : null}
-        </DragOverlay>
-        <div className="bottom-bar">
-          <button onClick={() => setWindowToggle({ createStrip: true })}>
-            Create new
-          </button>
-
-          {windowToggle["createStrip"] && (
-            <StripCreateWindow
-              onCreate={createNewStrip}
-              onClose={() => setWindowToggle({ createStrip: false })}
-            />
+          {createPortal(
+            <DragOverlay zIndex={100}>
+              {activeStripId ? (
+                <Strip
+                  stripData={
+                    Object.values(bayContent)
+                      .flat()
+                      .find((obj) =>
+                        Object.values(obj).includes(activeStripId)
+                      )!
+                  }
+                  handleClick={() => {
+                    return;
+                  }}
+                />
+              ) : null}
+            </DragOverlay>,
+            document.body
           )}
-        </div>
+        </DndContext>
+      </div>
+      <div className="bottom-bar">
+        <button onClick={() => setWindowToggle({ createStrip: true })}>
+          Create new
+        </button>
+        {windowToggle["createStrip"] && (
+          <StripCreateWindow
+            onCreate={createNewStrip}
+            onClose={() => setWindowToggle({ createStrip: false })}
+          />
+        )}
+        <button
+          onClick={() => setSelectionInProg(selectionInProg ? null : "update")}
+        >
+          Update strip
+        </button>
+        <button
+          onClick={() => setSelectionInProg(selectionInProg ? null : "delete")}
+        >
+          Delete strip
+        </button>
       </div>
     </div>
   );
@@ -130,6 +200,37 @@ export default function App() {
         RDY: [...bayContent["RDY"], newStrip],
       };
     });
+  }
+
+  function deleteStrip(stripId: string) {
+    const currentBay: string = Object.keys(bayContent).find((bay) =>
+      bayContent[bay].some((item) => item.id === stripId)
+    )!;
+
+    setBayContent((prev: any) => {
+      return {
+        ...prev,
+        [currentBay]: [
+          ...prev[currentBay].filter((item) => item["id"] !== stripId),
+        ],
+      };
+    });
+  }
+
+  function selectStrip({ stripId }: { stripId: string }) {
+    const strip: StripData = Object.values(bayContent)
+      .flat()
+      .find((item: StripData) => item.id === stripId)!;
+    if (selectionInProg === "update") {
+      UpdateStrip(strip);
+    } else if (selectionInProg === "delete") {
+      deleteStrip(stripId);
+    }
+    setSelectionInProg(null);
+  }
+
+  function exitSelection() {
+    setSelectionInProg(null);
   }
 
   function findContainer(id: UniqueIdentifier) {
@@ -236,7 +337,7 @@ export default function App() {
       }));
     }
     resizeStrip(overBay, stripId);
-    setActiveStripId(null);
+    setGroundStatus(overBay, stripId);
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -247,7 +348,6 @@ export default function App() {
   }
 
   function resizeStrip(newBay, stripId) {
-    console.log("newBay:" + newBay + " | stripId:" + stripId);
     if (newBay === "ARR" || newBay === "GMCAG") {
       setBayContent((prev: any) => ({
         ...prev,
@@ -257,7 +357,6 @@ export default function App() {
             : strip
         ),
       }));
-      console.log(bayContent);
     } else {
       setBayContent((prev: any) => ({
         ...prev,
@@ -267,7 +366,22 @@ export default function App() {
             : strip
         ),
       }));
-      console.log(bayContent);
+    }
+  }
+
+  function setGroundStatus(newBay, stripId) {
+    const strip: StripData = bayContent[newBay].find(
+      (item: StripData) => item.id === stripId
+    )!;
+
+    const callsign: string = strip.fpdata.cs;
+
+    if (newBay === "STUP") {
+      fetch(`/api/set-ground-status?callsign=${callsign}&state=STUP`);
+    } else if (newBay === "PUSH") {
+      fetch(`/api/set-ground-status?callsign=${callsign}&state=PUSH`);
+    } else if (newBay === "ACT") {
+      fetch(`/api/set-ground-status?callsign=${callsign}&state=TAXI`);
     }
   }
 }

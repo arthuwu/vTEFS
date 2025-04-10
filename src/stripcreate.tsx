@@ -65,7 +65,7 @@ export default function StripCreateWindow({
   function handleDataChange(key: string, value: string) {
     setNewStripData((prev: any) => ({
       ...prev,
-      [key]: value,
+      [key]: value.toUpperCase(),
     }));
   }
 
