@@ -69,7 +69,7 @@ export default function Strip({ stripData, handleClick }: StripProps) {
       <div {...listeners} {...attributes} className="strip-callsign">
         {stripData["fpdata"].cs}
       </div>
-      <div className="strip-data">{stripData["fpdata"].a_rmk}</div>
+      <div className="strip-data">{JSON.stringify(stripData["fpdata"])}</div>
       <button className="strip-toggle-indent" onClick={toggleIndent} />
     </div>
   ) : (
@@ -82,7 +82,7 @@ export default function Strip({ stripData, handleClick }: StripProps) {
       <div {...listeners} {...attributes} className="strip-callsign">
         {stripData["fpdata"].cs}
       </div>
-      <div className="strip-data">{stripData["fpdata"].a_rmk}</div>
+      <div className="strip-data">{JSON.stringify(stripData["fpdata"])}</div>
     </div>
   );
 }

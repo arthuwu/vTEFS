@@ -6,6 +6,7 @@
   width: 508px;
   position: relative;
   background-color: white;
+  user-select: none;
 }
 
 .strip-container-partial {
@@ -92,4 +93,13 @@
   border-bottom: 10px solid transparent;
   border-left: 10px solid rgb(0, 0, 0);
   transform: translate(-12px, -10px);
+}
+
+.strip-data {
+  font-size: 10px;
+  word-break: break-all;
+  word-wrap: break-word;
+  overflow-x: auto;
+  padding: 5px;
+  padding-top: 20px;
 }

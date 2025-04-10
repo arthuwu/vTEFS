@@ -2,6 +2,7 @@
   height: 100%;
   width: 100%;
   position: relative;
+  user-select: none;
 }
 
 .bay-title {
@@ -13,8 +14,8 @@
   line-height: 20px;
   font-size: 14px;
   background-color: #cccdcf;
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2), inset 2px 0px 2px #e0e1e2,
-    inset -2px 0px 2px rgba(0, 0, 0, 0.1), inset 0px 2dvb 2px #e0e1e2;
+  box-shadow: inset 0px -1px 2px rgba(0, 0, 0, 0.2), inset 2px 0px 2px #dee0df,
+    inset -2px 0px 2px rgba(0, 0, 0, 0.1), inset 0px 1px 2px #dee0df;
 }
 
 .bay-drop-area {
@@ -32,6 +33,6 @@
   height: calc(100% - 20px);
   overflow-y: auto;
   overflow-x: hidden;
-  box-shadow: inset -4px 0px 3px #e0e1e2;
+  box-shadow: inset -4px 0px 3px #dee0df, inset 0px 1px 2px #dee0df;
   z-index: -1;
 }
