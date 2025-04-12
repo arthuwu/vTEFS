@@ -108,6 +108,8 @@
   background-color: black;
   width: 508px;
   height: 2px;
+  bottom: 0;
+  position: absolute;
 }
 
 .dragging-preview-half {
@@ -120,6 +122,8 @@
   background-color: black;
   width: 216px;
   height: 2px;
+  bottom: 0;
+  position: absolute;
 }
 
 .right-arrow {
@@ -130,7 +134,7 @@
   border-bottom: 10px solid transparent;
   border-right: 10px solid rgb(0, 0, 0);
   right: 0;
-  transform: translate(12px, -10px);
+  transform: translate(12px, 46px);
 }
 
 .left-arrow {
@@ -140,7 +144,7 @@
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   border-left: 10px solid rgb(0, 0, 0);
-  transform: translate(-12px, -10px);
+  transform: translate(-12px, 46px);
 }
 
 .strip-data {

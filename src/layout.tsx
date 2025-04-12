@@ -205,16 +205,28 @@ export default function App() {
           <Clock />
         </div>
         <div className="draw-container">
-          <button onClick={() => togglePen("black")}>Bl</button>
-          <button onClick={() => togglePen("blue")}>B</button>
-          <button onClick={() => togglePen("red")}>R</button>
-          <button onClick={() => togglePen("green")}>G</button>
-          <button onClick={() => togglePen("yellow")}>Hi</button>
-          <button onClick={toggleEraser}>E</button>
+          <button onClick={() => togglePen("black")} className="dc1 working">
+            Bl
+          </button>
+          <button onClick={() => togglePen("blue")} className="dc2 working">
+            B
+          </button>
+          <button onClick={() => togglePen("red")} className="dc3 working">
+            R
+          </button>
+          <button onClick={() => togglePen("green")} className="dc4 working">
+            G
+          </button>
+          <button onClick={() => togglePen("yellow")} className="dc5 working">
+            Hi
+          </button>
+          <button onClick={toggleEraser} className="dc6 working">
+            E
+          </button>
           {drawingProps.drawingInProgress && (
-            <button onClick={stopDrawing} className="stop-drawing"></button>
+            <button onClick={stopDrawing} className="dc7 working"></button>
           )}
-          <button>Z</button>
+          <button className="dc8">Z</button>
         </div>
         <button>Settings</button>
         <button>Undo</button>

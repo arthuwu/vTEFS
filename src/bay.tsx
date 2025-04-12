@@ -7,7 +7,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { windowProps } from "./layout";
-import { CanvasPath } from "react-sketch-canvas";
 
 type BayProps = {
   bay: BayData;

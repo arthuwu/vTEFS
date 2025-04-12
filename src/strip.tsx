@@ -136,8 +136,6 @@ export default function Strip({
       }
 
       fetchPaths();
-
-      console.log("got to it");
       console.log(stripData["canvas"]);
     }
   }
@@ -161,7 +159,6 @@ export default function Strip({
   }, [drawingProps]);
 
   useEffect(() => {
-    console.log("re-render");
     if (canvasRef.current) {
       if (stripData["canvas"]) {
         canvasRef.current.loadPaths(stripData["canvas"]);
@@ -205,6 +202,7 @@ export default function Strip({
             strokeWidth={1}
             strokeColor={drawingProps.strokeColor}
             canvasColor={"#ffffff00"}
+            eraserWidth={10}
             onStroke={savePaths}
           />
         </div>
@@ -252,6 +250,16 @@ export default function Strip({
         style={style}
         onClick={handleClick}
       >
+        <div ref={canvasContainerRef} className="canvas-container">
+          <ReactSketchCanvas
+            ref={canvasRef}
+            strokeWidth={1}
+            strokeColor={drawingProps.strokeColor}
+            canvasColor={"#ffffff00"}
+            eraserWidth={10}
+            onStroke={savePaths}
+          />
+        </div>
         <ArrStrip
           stripData={stripData}
           stripFunctions={stripFunctions}

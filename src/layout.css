@@ -71,6 +71,7 @@
     inset 0px 2px 0px #d8ddde;
   display: grid;
   grid-template-columns: 135px 119px 82px 82px 73px 82px 73px 82px 82px 72px 82px 82px 82px 82px 82px 113px;
+  user-select: none;
 }
 
 .bottom-bar > button {
@@ -126,7 +127,7 @@
   grid-template-rows: 25px 25px;
   width: 100px;
   height: 100%;
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
 .draw-container > button {
@@ -141,6 +142,42 @@
   margin-right: 20px;
 }
 
-.draw-container > button:hover {
-  background: #d1d2d4;
+.draw-container .dc1 {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.draw-container .dc2 {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.draw-container .dc3 {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.draw-container .dc4 {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.draw-container .dc5 {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.draw-container .dc6 {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.draw-container .dc7 {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.draw-container .dc8 {
+  grid-column: 4;
+  grid-row: 2;
 }
