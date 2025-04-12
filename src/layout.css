@@ -10,19 +10,6 @@
   display: flex;
 }
 
-.bottom-bar {
-  box-sizing: border-box;
-  width: 1445px;
-  height: 63px;
-  bottom: 0;
-  position: absolute;
-  padding: 5px;
-  background-color: #cccdcf;
-  overflow: hidden;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), -2px -2px 4px rgba(0, 0, 0, 0.2),
-    inset 0px 2px 0px #d8ddde;
-}
-
 .gmc-amc-container {
   grid-template-columns: 580px 580px 285px;
   grid-template-rows: 228px 285px auto;
@@ -68,4 +55,92 @@
   opacity: 0.6;
   background-color: rgba(25, 25, 25);
   z-index: 9;
+}
+
+.bottom-bar {
+  box-sizing: border-box;
+  width: 1445px;
+  height: 63px;
+  bottom: 0;
+  position: absolute;
+  padding: 5px;
+  padding-left: 10px;
+  background-color: #cccdcf;
+  overflow: hidden;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), -2px -2px 4px rgba(0, 0, 0, 0.2),
+    inset 0px 2px 0px #d8ddde;
+  display: grid;
+  grid-template-columns: 135px 119px 82px 82px 73px 82px 73px 82px 82px 72px 82px 82px 82px 82px 82px 113px;
+}
+
+.bottom-bar > button {
+  background: #ebebeb;
+  border-radius: 5px;
+  border: 1px solid #999999;
+  height: 50px;
+  width: 67px;
+  font-size: 14px;
+  box-shadow: inset -35px 0px 35px rgba(0, 0, 0, 0.15),
+    inset 2px 2px 2px #f9f9f9;
+  margin-right: 20px;
+}
+
+.bottom-bar button.working:hover {
+  background: #d1d2d4;
+}
+.time-container {
+  display: grid;
+  width: 125px;
+}
+
+.logotype {
+  font-family: Arial;
+  font-weight: 600;
+  font-size: 20px;
+  display: flex;
+  font-size: 22px;
+  align-items: center;
+  justify-content: center;
+}
+
+.clock {
+  border: 1px solid #999999;
+  background: #e8e8e8;
+  height: 24px;
+  width: 130px;
+  display: flex;
+  font-size: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.logon-button {
+  width: 113px !important;
+  box-shadow: inset 0px -35px 35px rgba(0, 0, 0, 0.15),
+    inset 2px 2px 2px #f9f9f9 !important;
+}
+
+.draw-container {
+  display: grid;
+  grid-template-columns: 25px 25px 25px 25px;
+  grid-template-rows: 25px 25px;
+  width: 100px;
+  height: 100%;
+  margin-left: 10px;
+}
+
+.draw-container > button {
+  background: #ebebeb;
+  border-radius: 5px;
+  border: 1px solid #999999;
+  height: 100%;
+  width: 100%;
+  font-size: 14px;
+  box-shadow: inset -10px 0px 10px rgba(0, 0, 0, 0.15),
+    inset 1px 1px 1px #f9f9f9;
+  margin-right: 20px;
+}
+
+.draw-container > button:hover {
+  background: #d1d2d4;
 }

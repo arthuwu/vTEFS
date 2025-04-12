@@ -7,12 +7,14 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { windowProps } from "./layout";
+import { CanvasPath } from "react-sketch-canvas";
 
 type BayProps = {
   bay: BayData;
   strips: StripData[];
   handleStripClick: ({ stripId }: { stripId: string }) => void;
   windowProps: windowProps;
+  drawingProps: any;
 };
 
 export default function Bay({
@@ -20,6 +22,7 @@ export default function Bay({
   strips,
   handleStripClick,
   windowProps,
+  drawingProps,
 }: BayProps) {
   const { setNodeRef } = useDroppable({
     id: bay.id,
@@ -44,6 +47,7 @@ export default function Bay({
                   stripData={strip}
                   handleClick={() => handleStripClick({ stripId: strip.id })}
                   windowProps={windowProps}
+                  drawingProps={drawingProps}
                 />
               );
             })}

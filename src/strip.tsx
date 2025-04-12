@@ -2,16 +2,28 @@ import "./index.css";
 import "./strip.css";
 import { StripData } from "./types";
 import { useSortable } from "@dnd-kit/sortable";
-import { useCallback, useState, useRef } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  ReactHTMLElement,
+  useEffect,
+} from "react";
 import { DepStrip, DepStripPartial } from "./strips/dep-strip";
 import { ArrStrip, ArrStripPartial } from "./strips/arr-strip";
 import { BlkStrip, BlkStripPartial } from "./strips/blk-strip";
 import { windowProps } from "./layout";
+import {
+  ReactSketchCanvas,
+  type ReactSketchCanvasRef,
+  CanvasPath,
+} from "react-sketch-canvas";
 
 type StripProps = {
   stripData: StripData;
   handleClick: () => void;
   windowProps: windowProps;
+  drawingProps: any;
 };
 
 export type StripFunctionProps = {
@@ -35,6 +47,7 @@ export default function Strip({
   stripData,
   handleClick,
   windowProps,
+  drawingProps,
 }: StripProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging, over } =
     useSortable({
@@ -43,6 +56,9 @@ export default function Strip({
 
   const stripRef = useRef<HTMLDivElement>(null);
   const [updateState, setUpdateState] = useState<boolean>(false); //temp before refactor
+
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   const refs = useCallback(
     (node: HTMLDivElement | null) => {
@@ -112,6 +128,47 @@ export default function Strip({
     }
   }
 
+  function savePaths() {
+    if (canvasRef.current) {
+      async function fetchPaths() {
+        const paths = await canvasRef.current!.exportPaths();
+        stripData["canvas"] = paths;
+      }
+
+      fetchPaths();
+
+      console.log("got to it");
+      console.log(stripData["canvas"]);
+    }
+  }
+
+  useEffect(() => {
+    if (canvasContainerRef.current) {
+      if (drawingProps.drawingInProgress) {
+        canvasContainerRef.current.classList.add("enabled");
+      } else {
+        canvasContainerRef.current.classList.remove("enabled");
+      }
+    }
+
+    if (canvasRef.current) {
+      if (drawingProps.eraserMode) {
+        canvasRef.current.eraseMode(true);
+      } else {
+        canvasRef.current.eraseMode(false);
+      }
+    }
+  }, [drawingProps]);
+
+  useEffect(() => {
+    console.log("re-render");
+    if (canvasRef.current) {
+      if (stripData["canvas"]) {
+        canvasRef.current.loadPaths(stripData["canvas"]);
+      }
+    }
+  }, [isDragging]);
+
   if (isDragging) {
     if (over) {
       if (["ARR", "GMCAG"].includes(over!.id as string)) {
@@ -142,6 +199,15 @@ export default function Strip({
         style={style}
         onClick={handleClick}
       >
+        <div ref={canvasContainerRef} className="canvas-container">
+          <ReactSketchCanvas
+            ref={canvasRef}
+            strokeWidth={1}
+            strokeColor={drawingProps.strokeColor}
+            canvasColor={"#ffffff00"}
+            onStroke={savePaths}
+          />
+        </div>
         <DepStrip
           stripData={stripData}
           stripFunctions={stripFunctions}

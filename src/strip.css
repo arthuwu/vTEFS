@@ -600,3 +600,14 @@
   display: flex;
   text-align: center;
 }
+
+.canvas-container {
+  position: absolute;
+  height: 57px;
+  width: 508px;
+  pointer-events: none;
+}
+
+.canvas-container.enabled {
+  pointer-events: all;
+}

@@ -1,16 +1,17 @@
 .window-container.twy {
   position: fixed;
-  height: 700px;
-  width: 900px;
+  height: 780px;
+  width: 1000px;
   left: 50%;
   top: 50%;
   background: #d7d7d9;
   transform: translate(-50%, -50%);
-  font-family: Helvetica;
+  transform: translate(-50%, -55%);
 }
 
 .twy .window-content {
   display: block;
+  overflow: hidden;
 }
 
 .twy .create-close-button.close {
@@ -28,4 +29,90 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 3;
+}
+
+.button-overlay {
+  background: transparent;
+  height: 680px;
+  width: 100%;
+  z-index: 2;
+}
+
+.button-overlay button {
+  position: absolute;
+  top: 200px;
+}
+
+.twy-button {
+  height: 24px !important;
+  width: 24px !important;
+  font-size: 16x;
+  position: fixed;
+  background: #cccccc;
+  border: 1px solid #3d3d3d;
+  border-radius: 5px;
+  color: black;
+}
+
+.twy-button-hp {
+  width: 14px !important;
+  margin-left: 5px;
+}
+
+.twy-button-hp::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  width: 90%;
+  height: 3px;
+  border-radius: 3px;
+  background-color: #9f1213;
+  transform: translate(1px, -50%);
+  pointer-events: none;
+}
+
+.twy-button:hover {
+  background: #999999;
+}
+
+.twy-button-large {
+  width: 80px !important;
+  height: 50px !important;
+  border: none;
+  font-size: 15px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.twy-button-hex,
+.twy-button-hex:hover {
+  background: none;
+  border: none;
+  z-index: 1;
+}
+
+.twy-button-hex {
+  background: none;
+  border: none;
+  font-size: 50px;
+  color: #ff8000;
+  line-height: 0.5;
+  z-index: 2;
+  -webkit-text-stroke: 1px #3d3d3d;
+}
+
+.twy-button-hex::after {
+  content: "H";
+  color: #3d3d3d;
+  font-size: 22px;
+  position: absolute;
+  z-index: 3;
+  top: 7px;
+  left: 14px;
+  -webkit-text-stroke: 0px;
 }

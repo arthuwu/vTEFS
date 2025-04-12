@@ -66,6 +66,7 @@ export default function StripCreateWindow({
       },
       size: "full",
       indent: false,
+      canvas: null,
     };
 
     UpdateStrip(newStrip);

@@ -25,6 +25,8 @@ import {
 import { arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import TwySelectWindow from "./twyselect";
+import Clock from "./clock";
+import { CanvasPath } from "react-sketch-canvas";
 
 export type windowProps = {
   windowToggle: any;
@@ -40,6 +42,13 @@ export default function App() {
 
   const [activeStripId, setActiveStripId] = useState<string | null>(); //active for drag overlay
   const [selectionInProg, setSelectionInProg] = useState<string | null>();
+
+  const [drawingProps, setDrawingProps] = useState({
+    drawingInProgress: false,
+    strokeColor: null,
+    eraserMode: false,
+  });
+
   const [bayContent, setBayContent] = useState({
     RDY: [],
     STUP: [],
@@ -48,11 +57,13 @@ export default function App() {
     ARR: [],
     GMCAG: [],
   });
+
   const [windowToggle, setWindowToggle] = useState({
     createStrip: false,
     editStrip: false,
     twySelect: false,
   });
+
   const [lastSelectedStrip, setLastSelectedStrip] = useState<StripData | null>(
     null
   );
@@ -62,6 +73,35 @@ export default function App() {
     setWindowToggle: setWindowToggle,
   };
 
+  function toggleEraser() {
+    setDrawingProps((prev: any) => {
+      return {
+        ...prev,
+        drawingInProgress: true,
+        eraserMode: prev.eraserMode ? false : true,
+      };
+    });
+  }
+
+  function togglePen(color: string) {
+    setDrawingProps((prev: any) => {
+      return {
+        ...prev,
+        drawingInProgress: true,
+        strokeColor: color,
+        eraserMode: false,
+      };
+    });
+  }
+
+  function stopDrawing() {
+    setDrawingProps((prev: any) => {
+      return {
+        ...prev,
+        drawingInProgress: false,
+      };
+    });
+  }
   return (
     <div className="layout-page">
       {selectionInProg && <div className="selection-blocker"></div>}
@@ -82,6 +122,7 @@ export default function App() {
                 strips={bayContent["RDY"]}
                 handleStripClick={selectStrip}
                 windowProps={windowProps}
+                drawingProps={drawingProps}
               />
             </div>
             <div className="tl2">
@@ -91,6 +132,7 @@ export default function App() {
                 strips={bayContent["STUP"]}
                 handleStripClick={selectStrip}
                 windowProps={windowProps}
+                drawingProps={drawingProps}
               />
             </div>
             <div className="tl3">
@@ -100,6 +142,7 @@ export default function App() {
                 strips={bayContent["PUSH"]}
                 handleStripClick={selectStrip}
                 windowProps={windowProps}
+                drawingProps={drawingProps}
               />
             </div>
             <div className="tl4">
@@ -109,6 +152,7 @@ export default function App() {
                 strips={bayContent["ACT"]}
                 handleStripClick={selectStrip}
                 windowProps={windowProps}
+                drawingProps={drawingProps}
               />
             </div>
             <div className="tl5">
@@ -118,6 +162,7 @@ export default function App() {
                 strips={bayContent["ARR"]}
                 handleStripClick={selectStrip}
                 windowProps={windowProps}
+                drawingProps={drawingProps}
               />
             </div>
             <div className="tl6">
@@ -127,6 +172,7 @@ export default function App() {
                 strips={bayContent["GMCAG"]}
                 handleStripClick={selectStrip}
                 windowProps={windowProps}
+                drawingProps={drawingProps}
               />
             </div>
           </div>
@@ -145,6 +191,7 @@ export default function App() {
                     return;
                   }}
                   windowProps={windowProps}
+                  drawingProps={drawingProps}
                 />
               ) : null}
             </DragOverlay>,
@@ -153,13 +200,58 @@ export default function App() {
         </DndContext>
       </div>
       <div className="bottom-bar">
+        <div className="time-container">
+          <div className="logotype">vTEFS</div>
+          <Clock />
+        </div>
+        <div className="draw-container">
+          <button onClick={() => togglePen("black")}>Bl</button>
+          <button onClick={() => togglePen("blue")}>B</button>
+          <button onClick={() => togglePen("red")}>R</button>
+          <button onClick={() => togglePen("green")}>G</button>
+          <button onClick={() => togglePen("yellow")}>Hi</button>
+          <button onClick={toggleEraser}>E</button>
+          {drawingProps.drawingInProgress && (
+            <button onClick={stopDrawing} className="stop-drawing"></button>
+          )}
+          <button>Z</button>
+        </div>
+        <button>Settings</button>
+        <button>Undo</button>
+        <button>Zoom</button>
+        <button
+          onClick={() => setSelectionInProg(selectionInProg ? null : "delete")}
+          className="working"
+        >
+          Delete
+        </button>
+        <button>Recycle bin</button>
+        <button>Group</button>
+        <button>Minimise</button>
+        <button>Expand</button>
+        <button>Mailbox</button>
+        <button>Clone</button>
+        <button
+          onClick={() => setSelectionInProg(selectionInProg ? null : "edit")}
+          className="working"
+        >
+          Edit strip
+        </button>
         <button
           onClick={() =>
             setWindowToggle({ ...windowToggle, createStrip: true })
           }
+          className="working"
         >
           Create new
         </button>
+        <button
+          onClick={() => setSelectionInProg(selectionInProg ? null : "update")}
+          className="working"
+        >
+          Update strip
+        </button>
+        <button className="logon-button">GMC1</button>
         {windowToggle["createStrip"] && (
           <StripCreateWindow
             onCreate={createNewStrip}
@@ -168,21 +260,6 @@ export default function App() {
             }
           />
         )}
-        <button
-          onClick={() => setSelectionInProg(selectionInProg ? null : "update")}
-        >
-          Update strip
-        </button>
-        <button
-          onClick={() => setSelectionInProg(selectionInProg ? null : "delete")}
-        >
-          Delete strip
-        </button>
-        <button
-          onClick={() => setSelectionInProg(selectionInProg ? null : "edit")}
-        >
-          Edit strip
-        </button>
         {windowToggle["editStrip"] && (
           <StripEditWindow
             onEdit={EditStrip}

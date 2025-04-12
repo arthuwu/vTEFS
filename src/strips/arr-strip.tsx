@@ -37,7 +37,17 @@ export function ArrStrip({
       <div className="adep">{stripData["fpdata"].adep}</div>
       <div className="bay">{stripData["fpdata"].bay}</div>
       <div className="a_rmk">{stripData["fpdata"].a_rmk}</div>
-      <div className="twy">{stripData["fpdata"].twy}</div>
+      <div
+        onClick={() =>
+          stripFunctions.setWindowToggle({
+            ...stripFunctions.windowToggle,
+            twySelect: stripFunctions.windowToggle["twySelect"] ? false : true,
+          })
+        }
+        className="twy"
+      >
+        {stripData["fpdata"].twy}
+      </div>
       <div className="act">{stripData["fpdata"].act}</div>
       <div onClick={stripFunctions.setTaxiFlag} className="t_flag tickbox">
         {stripData["flagdata"].t_flag ? "✓" : " "}

@@ -1,3 +1,5 @@
+import { CanvasPath } from "react-sketch-canvas";
+
 export type CurrentBay = "RDY" | "STUP" | "PUSH" | "ACT" | "ARR" | "GMCAG";
 
 export type StripData = {
@@ -7,6 +9,7 @@ export type StripData = {
   flagdata: FlagData;
   size: "full" | "half";
   indent: boolean;
+  canvas: CanvasPath[] | null;
 };
 
 export type Bay = {
