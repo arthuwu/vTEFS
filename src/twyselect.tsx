@@ -40,7 +40,8 @@ const buttonMapping: Record<string, buttonData> = {
   },
   hold1: {
     position: [742, 446, 0],
-    label: "⯃",
+    //label: "⯃",
+    label: " ",
     output: "#",
     type: "hex",
   },

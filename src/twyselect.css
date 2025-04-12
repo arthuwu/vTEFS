@@ -45,8 +45,8 @@
 }
 
 .twy-button {
-  height: 24px !important;
-  width: 24px !important;
+  height: 24px;
+  width: 24px;
   font-size: 16x;
   position: fixed;
   background: #cccccc;
@@ -56,7 +56,7 @@
 }
 
 .twy-button-hp {
-  width: 14px !important;
+  width: 14px;
   margin-left: 5px;
 }
 
@@ -89,13 +89,7 @@
   justify-content: center;
 }
 
-.twy-button-hex,
-.twy-button-hex:hover {
-  background: none;
-  border: none;
-  z-index: 1;
-}
-
+/*
 .twy-button-hex {
   background: none;
   border: none;
@@ -105,6 +99,28 @@
   z-index: 2;
   -webkit-text-stroke: 1px #3d3d3d;
 }
+  */
+
+.twy-button-hex {
+  width: 35px;
+  height: 35px;
+  background: #ff8000;
+  border: none;
+  aspect-ratio: 1;
+  --o: calc(50% * tan(-22.5deg));
+  clip-path: polygon(
+    var(--o) 50%,
+    50% var(--o),
+    calc(100% - var(--o)) 50%,
+    50% calc(100% - var(--o))
+  );
+}
+
+.twy-button-hex:hover {
+  background: #d16901;
+  border: none;
+  z-index: 1;
+}
 
 .twy-button-hex::after {
   content: "H";
@@ -112,7 +128,7 @@
   font-size: 22px;
   position: absolute;
   z-index: 3;
-  top: 7px;
-  left: 14px;
+  top: 5px;
+  left: 9px;
   -webkit-text-stroke: 0px;
 }

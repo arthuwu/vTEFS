@@ -70,7 +70,7 @@
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), -2px -2px 4px rgba(0, 0, 0, 0.2),
     inset 0px 2px 0px #d8ddde;
   display: grid;
-  grid-template-columns: 135px 119px 82px 82px 73px 82px 73px 82px 82px 72px 82px 82px 82px 82px 82px 113px;
+  grid-template-columns: 135px 119px 82px 82px 82px 73px 82px 82px 73px 82px 82px 82px 82px 82px 82px 113px;
   user-select: none;
 }
 
