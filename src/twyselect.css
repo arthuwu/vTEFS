@@ -1,0 +1,31 @@
+.window-container.twy {
+  position: fixed;
+  height: 700px;
+  width: 900px;
+  left: 50%;
+  top: 50%;
+  background: #d7d7d9;
+  transform: translate(-50%, -50%);
+  font-family: Helvetica;
+}
+
+.twy .window-content {
+  display: block;
+}
+
+.twy .create-close-button.close {
+  margin-right: 130px;
+  color: #ae7a7a;
+}
+
+.close-container input {
+  margin-right: 130px;
+  font-size: 18px;
+}
+
+.twy .close-container {
+  padding-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

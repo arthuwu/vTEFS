@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./stripcreate.css";
 import { FlightPlanData, StripData } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import { UpdateStrip } from "./updatestrip";
 
 type stripCreateProps = {
   onCreate: (newStrip: StripData) => void;
@@ -33,6 +34,7 @@ export default function StripCreateWindow({
     cfl: null,
     tsat: null,
     ctot: null,
+    etot: null,
     ps_c: null,
     twy: null,
     tsatrmk: null,
@@ -43,6 +45,7 @@ export default function StripCreateWindow({
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [selectedStripType, setSelectedStripType] = useState<string>("DEP");
 
   function handleStripCreate() {
     if (!newStripData["cs"]) {
@@ -52,12 +55,21 @@ export default function StripCreateWindow({
 
     const newStrip: StripData = {
       id: uuidv4(),
-      type: "DEP",
+      type: selectedStripType,
       fpdata: newStripData,
-      flagdata: { cft: false, ctl: false, fpc_flag: false, c_flag: false },
+      flagdata: {
+        cft: false,
+        ctl: false,
+        fpc_flag: false,
+        c_flag: false,
+        t_flag: false,
+      },
       size: "full",
       indent: false,
     };
+
+    UpdateStrip(newStrip);
+
     onCreate(newStrip);
     onClose();
   }
@@ -69,27 +81,57 @@ export default function StripCreateWindow({
     }));
   }
 
+  const stripType = selectedStripType.toLowerCase();
+
   return (
     <div className="window-container">
       <div className="window-titlebar">New Strip</div>
-      <div className="window-strip">
-        {Object.entries(newStripData).map(([key, value]) => (
-          <div key={key} className={key}>
-            <input
-              type="text"
-              placeholder={key}
-              value={value ?? ""}
-              onChange={(e) => handleDataChange(key, e.target.value)}
-            />
+      <div className="window-content">
+        <div className="window-type-select">
+          Strip type:
+          <select
+            value={selectedStripType}
+            onChange={(inp: any) => setSelectedStripType(inp.target.value)}
+          >
+            <option value="DEP">DEP</option>
+            <option value="ARR">ARR</option>
+            <option value="EMER">EMER</option>
+            <option value="VFR">VFR</option>
+            <option value="BLK">BLK</option>
+            <option value="GRN">GREEN</option>
+            <option value="WHT">WHITE</option>
+          </select>
+        </div>
+        <div className="window-strip">
+          <div
+            className={
+              "select-strip-" + stripType + " " + stripType + "-background"
+            }
+          >
+            {Object.entries(newStripData).map(([key, value]) => (
+              <div key={key} className={key}>
+                <input
+                  type="text"
+                  placeholder={key}
+                  value={value ?? ""}
+                  onChange={(e) => handleDataChange(key, e.target.value)}
+                />
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        <div className="close-container">
+          <button onClick={onClose} className="create-close-button close">
+            <span className="material-symbols-outlined">close</span>
+          </button>
+          <button
+            onClick={handleStripCreate}
+            className="create-close-button create"
+          >
+            <span className="material-symbols-outlined">check</span>
+          </button>
+        </div>
       </div>
-      <button onClick={onClose} className="create-close-button">
-        ✗
-      </button>
-      <button onClick={handleStripCreate} className="create-close-button">
-        ✓
-      </button>
     </div>
   );
 }

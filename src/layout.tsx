@@ -2,10 +2,11 @@ import { useState } from "react";
 import Bay from "./bay";
 import Strip from "./strip";
 import StripCreateWindow from "./stripcreate";
+import StripEditWindow from "./stripedit";
 import { UpdateStrip } from "./updatestrip";
 import "./index.css";
 import "./layout.css";
-import { Bay as BayData, StripData } from "./types";
+import { Bay as BayData, FlightPlanData, StripData } from "./types";
 import {
   DndContext,
   DragEndEvent,
@@ -19,9 +20,16 @@ import {
   closestCorners,
   DragOverlay,
   UniqueIdentifier,
+  pointerWithin,
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
+import TwySelectWindow from "./twyselect";
+
+export type windowProps = {
+  windowToggle: any;
+  setWindowToggle: (any) => void;
+};
 
 export default function App() {
   const mouseSensor = useSensor(MouseSensor);
@@ -42,48 +50,16 @@ export default function App() {
   });
   const [windowToggle, setWindowToggle] = useState({
     createStrip: false,
+    editStrip: false,
+    twySelect: false,
   });
+  const [lastSelectedStrip, setLastSelectedStrip] = useState<StripData | null>(
+    null
+  );
 
-  const testData: StripData = {
-    id: "1231ghasd",
-    type: "DEP",
-    fpdata: {
-      eobt: null,
-      fr: null,
-      cs: "THIS",
-      atyp: null,
-      wtc: null,
-      ssr: null,
-      drwy: null,
-      arwy: null,
-      rfl: null,
-      sid: null,
-      adep: null,
-      ades: null,
-      bay: null,
-      atis: null,
-      qnh: null,
-      ttr: null,
-      er: null,
-      cfl: null,
-      tsat: null,
-      ctot: null,
-      ps_c: null,
-      twy: null,
-      tsatrmk: null,
-      ctotrmk: null,
-      cdmrmk: null,
-      a_rmk: null,
-      act: null,
-    },
-    flagdata: {
-      cft: false,
-      ctl: false,
-      fpc_flag: false,
-      c_flag: false,
-    },
-    size: "full",
-    indent: false,
+  const windowProps: windowProps = {
+    windowToggle: windowToggle,
+    setWindowToggle: setWindowToggle,
   };
 
   return (
@@ -96,15 +72,16 @@ export default function App() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
           onDragOver={handleDragOver}
-          collisionDetection={closestCorners}
+          collisionDetection={pointerWithin}
         >
-          <div className="layout-container gmc-amc-container">
+          <div className="gmc-amc-container">
             <div className="tl1">
               <Bay
                 key={"RDY"}
                 bay={{ id: "RDY", title: "CDC Ready to Start" }}
                 strips={bayContent["RDY"]}
                 handleStripClick={selectStrip}
+                windowProps={windowProps}
               />
             </div>
             <div className="tl2">
@@ -113,6 +90,7 @@ export default function App() {
                 bay={{ id: "STUP", title: "Startup" }}
                 strips={bayContent["STUP"]}
                 handleStripClick={selectStrip}
+                windowProps={windowProps}
               />
             </div>
             <div className="tl3">
@@ -121,6 +99,7 @@ export default function App() {
                 bay={{ id: "PUSH", title: "Pushback" }}
                 strips={bayContent["PUSH"]}
                 handleStripClick={selectStrip}
+                windowProps={windowProps}
               />
             </div>
             <div className="tl4">
@@ -129,6 +108,7 @@ export default function App() {
                 bay={{ id: "ACT", title: "Active" }}
                 strips={bayContent["ACT"]}
                 handleStripClick={selectStrip}
+                windowProps={windowProps}
               />
             </div>
             <div className="tl5">
@@ -137,6 +117,7 @@ export default function App() {
                 bay={{ id: "ARR", title: "AMC Arrivals" }}
                 strips={bayContent["ARR"]}
                 handleStripClick={selectStrip}
+                windowProps={windowProps}
               />
             </div>
             <div className="tl6">
@@ -145,6 +126,7 @@ export default function App() {
                 bay={{ id: "GMCAG", title: "GMC Active" }}
                 strips={bayContent["GMCAG"]}
                 handleStripClick={selectStrip}
+                windowProps={windowProps}
               />
             </div>
           </div>
@@ -162,6 +144,7 @@ export default function App() {
                   handleClick={() => {
                     return;
                   }}
+                  windowProps={windowProps}
                 />
               ) : null}
             </DragOverlay>,
@@ -170,13 +153,19 @@ export default function App() {
         </DndContext>
       </div>
       <div className="bottom-bar">
-        <button onClick={() => setWindowToggle({ createStrip: true })}>
+        <button
+          onClick={() =>
+            setWindowToggle({ ...windowToggle, createStrip: true })
+          }
+        >
           Create new
         </button>
         {windowToggle["createStrip"] && (
           <StripCreateWindow
             onCreate={createNewStrip}
-            onClose={() => setWindowToggle({ createStrip: false })}
+            onClose={() =>
+              setWindowToggle({ ...windowToggle, createStrip: false })
+            }
           />
         )}
         <button
@@ -189,6 +178,30 @@ export default function App() {
         >
           Delete strip
         </button>
+        <button
+          onClick={() => setSelectionInProg(selectionInProg ? null : "edit")}
+        >
+          Edit strip
+        </button>
+        {windowToggle["editStrip"] && (
+          <StripEditWindow
+            onEdit={EditStrip}
+            activeStrip={lastSelectedStrip}
+            onClose={() =>
+              setWindowToggle({ ...windowToggle, editStrip: false })
+            }
+          />
+        )}
+        {windowToggle["twySelect"] && (
+          <TwySelectWindow
+            activeStrip={lastSelectedStrip}
+            onClose={() =>
+              setWindowToggle({ ...windowToggle, twySelect: false })
+            }
+            bayContent={bayContent}
+            setBayContent={setBayContent}
+          />
+        )}
       </div>
     </div>
   );
@@ -202,7 +215,7 @@ export default function App() {
     });
   }
 
-  function deleteStrip(stripId: string) {
+  function DeleteStrip(stripId: string) {
     const currentBay: string = Object.keys(bayContent).find((bay) =>
       bayContent[bay].some((item) => item.id === stripId)
     )!;
@@ -217,14 +230,41 @@ export default function App() {
     });
   }
 
+  function OpenEditWindow() {
+    setWindowToggle({ ...windowToggle, editStrip: true });
+  }
+
+  function EditStrip(activeStripData: FlightPlanData) {
+    const currentBay: string = Object.keys(bayContent).find((bay) =>
+      bayContent[bay].some((item) => item.id === lastSelectedStrip!.id)
+    )!;
+
+    setBayContent((prev: any) => {
+      const newData = { ...prev };
+
+      newData[currentBay] = newData[currentBay].map((item) =>
+        item.id == lastSelectedStrip!.id
+          ? { ...item, fpdata: activeStripData }
+          : item
+      );
+
+      return newData;
+    });
+  }
+
   function selectStrip({ stripId }: { stripId: string }) {
     const strip: StripData = Object.values(bayContent)
       .flat()
       .find((item: StripData) => item.id === stripId)!;
+
+    setLastSelectedStrip(strip);
+
     if (selectionInProg === "update") {
       UpdateStrip(strip);
     } else if (selectionInProg === "delete") {
-      deleteStrip(stripId);
+      DeleteStrip(stripId);
+    } else if (selectionInProg === "edit") {
+      OpenEditWindow();
     }
     setSelectionInProg(null);
   }
@@ -307,6 +347,8 @@ export default function App() {
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
+
+    if (!over) return;
 
     const stripId = active.id as string; //active strip callsign
     const overId = over!.id as string; //over strip callsign

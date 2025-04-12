@@ -2,7 +2,7 @@ export type CurrentBay = "RDY" | "STUP" | "PUSH" | "ACT" | "ARR" | "GMCAG";
 
 export type StripData = {
   id: string;
-  type: "DEP" | "ARR" | "EMER" | "VFR" | "BLK";
+  type: string;
   fpdata: FlightPlanData;
   flagdata: FlagData;
   size: "full" | "half";
@@ -38,6 +38,7 @@ export type FlightPlanData = {
   cfl: string | null;
   tsat: number | null;
   ctot: number | null;
+  etot: number | null;
   ps_c: "R" | "G" | "B" | "NS" | null;
   twy: string | null; //taxiways
   tsatrmk: string | null;
@@ -52,4 +53,5 @@ export type FlagData = {
   ctl: boolean;
   fpc_flag: boolean; //fp checked flag (top)
   c_flag: boolean; //clearance flag (bottom)
+  t_flag: boolean; //taxi flag (arrivals)
 };

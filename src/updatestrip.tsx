@@ -5,16 +5,17 @@ export function UpdateStrip(oldStripData: StripData) {
   const callsign: string = newStripData.fpdata.cs;
 
   function getTTRorER(route: string) {
+    console.log("wtf");
     route = route.replace("/", " ");
     const isTTR = route.match(
       /(V601 |V611 |V621 |V631 |V641 |V651 |V10 |V11 |V12)/
     );
     if (!isTTR) {
       const isBEKOL = route.match(/(G471 |B208 |A461 |G586 )/);
-      if (!isTTR) {
+      if (!isBEKOL) {
         return null;
       } else {
-        newStripData.fpdata.er = isBEKOL![0].trim();
+        newStripData.fpdata.er = isBEKOL[0].trim();
       }
     } else {
       newStripData.fpdata.ttr = isTTR[0].trim();
@@ -43,8 +44,6 @@ export function UpdateStrip(oldStripData: StripData) {
 
     newStripData.fpdata.act =
       fetchedData["data"].g_state === "DEPA" ? "T/O" : null;
-
-    console.log(newStripData);
   }
 
   fetchData();
